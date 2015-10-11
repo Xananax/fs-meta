@@ -1,10 +1,10 @@
 {
   "name": "fs-meta",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "description": "A replacement for the native fs module that does a little more",
   "main": "index.js",
   "scripts": {
-    "compile": "./node_modules/.bin/babel src --out-dir lib",
+    "compile": "babel src --out-dir lib",
     "test": "mocha --compilers js:babel/register --require should --recursive --ui bdd --reporter spec"
   },
   "keywords": [
@@ -31,7 +31,7 @@
     "move"
   ],
   "author": "xananax@yelostudio.com",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-loader": "^5.3.2",
@@ -53,5 +53,16 @@
     "mkdirp": "^0.5.1",
     "readdirp": "^2.0.0",
     "xml2js": "^0.4.12"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xananax/fs-meta.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Xananax/fs-meta/issues"
+  },
+  "homepage": "https://github.com/Xananax/fs-meta#readme"
 }
