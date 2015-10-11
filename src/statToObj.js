@@ -1,8 +1,9 @@
 import path from 'path';
 import mime from 'mime';
 
-export default function statToObj(src,stat){
+export default function statToObj(src,stat,rootDir){
 	let {dev,ino,mode,nlink,uid,gid,rdev,size,blksize,blocks,atime,mtime,ctime,birthtime} = stat;
+	rootDir = rootDir || '';
 	let ext = path.extname(src);
 	let basename = path.basename(src,ext);
 	let dirname = path.dirname(src);
@@ -12,8 +13,8 @@ export default function statToObj(src,stat){
 	let obj = {
 		basename
 	,	filename:basename+ext
-	,	path:src
-	,	dirname
+	,	path:src.replace(rootDir,'')
+	,	dirname:dirname.replace(rootDir,'')
 	,	extension:ext.replace(/^\./,'').toLowerCase()
 	,	isFile:stat.isFile()
 	,	isDirectory:stat.isDirectory()

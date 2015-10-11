@@ -63,11 +63,14 @@ fsm.readFile('path/to/file',function(err,contents){
 
 ```js
 function operation(filePath,stats,options,next){
-    doSomethingWithFile(filePath,next);
+    doSomethingWithFile(filePath,(err)=>{
+        if(err){return next(err);}
+        return next();
+    });
 }
 var options = {
     depth:10 //defaults to infinity
-,   lstat:false / filesf true, uses lstat instead of stat
+,   lstat:false // if true, uses lstat instead of stat
 }
 fsm.traverse(path,options,operation)
     .then(()=>console.log('done'))
@@ -87,16 +90,22 @@ function operation(fileInfo){
     doSomethingWithFile(fileInfo);
 }
 var options = {
-    depth:10 //defaults to infinity
-,   lstat:false / filesf true, readdirp uses fsm.lstat instead of fsm.stat in order to stat files and includes symlink entries in the stream along with files
+    depth:10 // defaults to 1
+,   lstat:false // if true, readdirp uses fsm.lstat instead of fsm.stat in order to stat files and includes symlink entries in the stream along with files
 ,   fileFilter:null //filter to include/exclude files found
 ,   directoryFilter: null//filter to include/exclude directories found and to recurse into
-,   entryType: 'files' //determines if data events on the stream should be emitted for 'files', 'directories', 'both', or 'all'. Setting to 'all' will also include entries for other types of file descriptors like character devices, unix sockets and named pipes. Defaults to 'files'.
+,   entryType: 'both' //determines if data events on the stream should be emitted for 'files', 'directories', 'both', or 'all'. Setting to 'all' will also include entries for other types of file descriptors like character devices, unix sockets and named pipes. Defaults to 'files'.
 }
-fsm.traverse(path,options,operation)
+fsm.readdirp(path,options,operation)
     .then(()=>console.log('done'))
     .error(err=>throw err)
 ```
+
+Differences with `traverse`:
+
+- readdirp will *not* process the root directory
+- The default depth is 1, not infinity
+- You do not need to call `next()` for the processing to continue
 
 
 ### fsm.getMeta(path[,options])
@@ -112,8 +121,9 @@ Similar to `stats`, but with three differences:
 ```js
 var collectedJson = []
 var options = {
-    lstat:true //false will use stat instead of lstat
-,   followSymLinks:true //does nothing if `lstat` is false
+    lstat:true // false will use stat instead of lstat
+,   followSymLinks:true // does nothing if `lstat` is false
+,   root:'' // if set, all paths will be truncated to this root dir
 ,   filters:[
         fsm.filters.fileSize
     ,   fsm.filters.image
@@ -149,9 +159,10 @@ Just like in `fsm.recurse`, filters are applied to files first, and parent direc
 
 ```js
 var options = {
-    lstat:true //false will use stat instead of lstat
-,   followSymLinks:true //does nothing if `lstat` is false
+    lstat:true // false will use stat instead of lstat
+,   followSymLinks:true // does nothing if `lstat` is false
 ,   depth:10
+,   root:__dirname // if set, all paths will be truncated to this root dir
 ,   filters:[
         fsm.filters.fileSize
     ,   fsm.filters.image
@@ -161,6 +172,34 @@ fsm.getMetaRecursive(__dirname,options)
     .then(files=>console.log(files))
     .error(err=>throw err)
 ```
+
+`getMetaRecursive` returns an object `{indexes,files}`
+Directories have a `file` array containing indexes of files in the returned array.
+
+Example of returned object:
+
+```js
+{
+    indexes:{
+        'directory/file.extension':0
+    ,   'directory':1
+    }
+    files:[
+        {
+            isFile:true
+        ,   filename:'file.extension'
+            //other regular properties
+        }
+    ,   {
+            isDirectory:true
+        ,   filename:'directory'
+        ,   files:[0]
+            //other regular properties
+        }
+    ]
+}
+```
+
 
 ### fsm.statToObj(stats)
 

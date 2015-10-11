@@ -1,4 +1,4 @@
-const fsExtraMethods = [
+export const fsExtraMethods = [
 	'copy'
 ,	'createOutputStream'
 ,	'emptyDir'

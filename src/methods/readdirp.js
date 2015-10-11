@@ -6,9 +6,10 @@ export default function readdir_recursive(src,options,operation,cb){
 		operation = options;
 		options = null;
 	}
-	options = Object.assign({},options,{
+	options = Object.assign({},{
 		root:src
-	});
+	,	entryType:'both'
+	},options);
 	const stream = readdirp(options);
 	return (operation && cb) ? 
 		(stream

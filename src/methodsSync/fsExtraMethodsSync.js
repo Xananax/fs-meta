@@ -1,4 +1,4 @@
-export const fsExtraMethods = [
+export const fsExtraMethodsSync = [
 	'copySync'
 ,	'emptyDirSync'
 ,	'ensureDirSync'

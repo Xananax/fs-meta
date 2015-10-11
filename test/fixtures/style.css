@@ -1,0 +1,19 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #00b7ff;
+}
+.xinfo-container a {
+  text-decoration: none;
+}
+.xinfo-container h1 a:hover span:nth-child(1) {
+  color: #5c5063;
+}
+.xinfo-container .xinfo-link a:hover span {
+  color: #5c5063;
+}
+.xinfo-container .xinfo-dir-link a:after {
+  content: '/';
+}

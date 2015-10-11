@@ -19,8 +19,8 @@ Object.assign(methods,{
 	exists(src,cb){
 		return exists(fs,src,cb)
 	}
-,	traverse(src,op,cb){
-		return traverse(fs,src,op,cb);
+,	traverse(src,options,operation,cb){
+		return traverse(fs,src,options,operation,cb);
 	}
 ,	getMeta(src,options,cb){
 		return getMeta(fs,src,options,cb);

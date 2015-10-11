@@ -2,6 +2,11 @@ import methods from './methods';
 import methodsSync from './methodsSync';
 import Promise from 'bluebird';
 
+const methodsReturnsPath = [
+	'getMeta'
+,	'getMetaRecursive'
+]
+
 const methodsWithPath = [
 	'truncate'
 ,	'chown'
@@ -61,21 +66,35 @@ export default function makeBox(rootDir,sync,unpromised){
 		obj[name] = methods[name];
 	}
 	if(rootDir){
-		rootDir = rootDir.replace(/\/$/,'')+'/';
+		obj.root = rootDir.replace(/\/$/,'');
 		for(let name of methodsWithPath){
 			if(obj[name]){
-				obj[name] = function(src,...args){
-					src = src ? rootDir+src : rootDir;
-					methods[name](src,...args);
-				}
+				let fn = obj[name];
+				obj[name] = methodsReturnsPath.indexOf(name)>=0 ?
+					function boxedToRootReturnsPath(src,options,cb){
+						src = src ? obj.root+src : obj.root;
+						if(typeof options == 'function'){
+							cb = options;
+							options = null;
+						}
+						options = Object.assign({},options,{root:obj.root});
+						return fn(src,options,cb);
+					} 
+					:
+					function boxedToRoot(src,...args){
+						src = src ? obj.root+src : obj.root;
+						console.log(name,src)
+						return fn(src,...args);
+					}
 			}
 		}
 		for(let name of methodsWithTwoPaths){
 			if(obj[name]){
-				obj[name] = function(src,dest,...args){
-					src = src ? rootDir + src : rootDir;
-					dest = dest ? rootDir + dest : rootDir;
-					methods[name](src,dest,...args);
+				let fn = obj[name] 
+				obj[name] = function boxedToRootTwoPaths(src,dest,...args){
+					src = src ? obj.root + src : obj.root;
+					dest = dest ? obj.root + dest : obj.root;
+					return fn(src,dest,...args);
 				}
 			}
 		}
@@ -83,6 +102,7 @@ export default function makeBox(rootDir,sync,unpromised){
 	if(!sync && !unpromised){
 		for(let name in obj){
 			if(!Object.prototype.hasOwnProperty.call(obj,name)){continue;}
+			if(!(typeof obj[name] == 'function')){continue;}
 			obj[name] = Promise.promisify(obj[name]);
 		}
 	}

@@ -6,7 +6,7 @@ export default function getMeta(fs,src,options,cb,stat){
 		options = null;
 	}
 	if(stat){
-		return processStat(src,options,cb)(null,stat);
+		return processStat(fs,src,options,cb)(null,stat);
 	}
 	var lstat = (options && ('lstat' in options)) ? options.lstat : true;
 	if(lstat){
@@ -38,9 +38,10 @@ function applyFilters(fs,obj,options,cb){
 }
 
 function processStat(fs,src,options,cb){
+	const rootDir = options && options.root || '';
 	return function statCB(err,stat){
 		if(err){return cb(err);}
-		const obj = statToObj(src,stat);
+		const obj = statToObj(src,stat,rootDir);
 		if(options && obj.isSymbolicLink && options.followSymLinks){
 			return symbolicLinkStat(fs,obj,src,options,cb);
 		}
