@@ -31,5 +31,8 @@ export const fsMethodsSync = [
 ,	'appendFileSync'
 ,	'existsSync'
 ,	'accessSync'
-
+,	'F_OK'
+,	'R_OK'
+,	'W_OK'
+,	'X_OK'
 ]

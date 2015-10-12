@@ -25,7 +25,6 @@ export const fsMethods = [
 ,	'futimes'
 ,	'fsync'
 ,	'write'
-,	'write'
 ,	'read'
 ,	'readFile'
 ,	'writeFile'
@@ -34,4 +33,8 @@ export const fsMethods = [
 ,	'unwatchFile'
 ,	'watch'
 ,	'access'
+,	'F_OK'
+,	'R_OK'
+,	'W_OK'
+,	'X_OK'
 ]
