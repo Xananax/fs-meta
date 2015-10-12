@@ -3,7 +3,7 @@ var rootDir = __dirname+'/fixtures';
 var api = fs.makeAPI(rootDir);
 
 describe('# GET API',()=>{
-	describe.skip('## api(methodName,args,cb)',()=>{
+	describe('## api(methodName,args,cb)',()=>{
 		it('should run the command specified by methodName',done=>{
 			api('readdir',['/'],(err,res)=>{
 				res.result.should.be.an.Array();

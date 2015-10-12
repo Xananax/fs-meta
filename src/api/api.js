@@ -13,19 +13,21 @@ export default function createAPI(fs,path,options){
 	const commandRegExp = new RegExp(regExpEscape(commandSeparator)+'(.+)');
 	
 	function processCommand(methodName,args,cb){
-		if(!(methodName in methods)){return cb(commandNotExistsError(methodName))}
+		if(!isValidCommand(methodName)){return cb(commandNotExistsError(methodName))}
 		if(!Array.isArray(args)){return cb(argumentWrongTypeError(methodName,toType(args),'array'))}
 		const fn = methods[methodName];
 		fn(args,cb);
 	}
 
-	function run(path,options,cb){
-		if(typeof options == 'function'){
-			cb = options;
-			options = null;
-		}
-		path = path.replace(/^\/|\/$/,'');
-		var args = path.split(separator);
+	function isValidCommand(methodName,args,cb){
+		return (methodName in methods);
+	}
+
+	function parsePathToArguments(path){
+		return path.replace(/^\/|\/$/,'').split(separator);
+	}
+
+	function getCommandFromArguments(args){
 		var firstArg = args[0].split(commandRegExp);
 		var command = firstArg[0];
 		if(firstArg[1]){
@@ -33,6 +35,16 @@ export default function createAPI(fs,path,options){
 		}else{
 			args.shift();
 		}
+		return command;
+	}
+
+	function run(path,options,cb,command){
+		if(typeof options == 'function'){
+			cb = options;
+			options = null;
+		}
+		const args = parsePathToArguments(path);
+		command = command || getCommandFromArguments(args);
 		args.push(options);
 		return processCommand(command,args,cb);
 	}
@@ -46,5 +58,8 @@ export default function createAPI(fs,path,options){
 
 	processCommand.middleware = middleware;
 	processCommand.run = run;
+	processCommand.isValidCommand = isValidCommand;
+	processCommand.getCommandFromArguments = getCommandFromArguments;
+	processCommand.parsePathToArguments = parsePathToArguments
 	return processCommand;
 }

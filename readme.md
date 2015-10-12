@@ -259,6 +259,9 @@ api.middleware is a regular `api.middleware(req,res)` suitable for connect or ex
 
 Any command can be explored by passing `--help` as the first argument. All available commands can be listed by calling the `--help` method (examples: `api.run('--help',(err,res))`, `api('readdir/--help',null,(err,res))`, or `api.middleware({path:'--help'},res)`).
 
+Other commands are exposed to allow oneself to compose their own middleware:
+`api.isValidCommand`, `api.getCommandFromArguments` `api.parsePathToArguments`. Check out the source for more info.
+
 **note**: all errors returned by `api`, `api.run` and `api.middleware` are json objects.
 
 ----
