@@ -33,7 +33,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	getMeta:{
+,	getmeta:{
 		name:'getMeta'
 	,	description:''
 	,	args:[
@@ -52,7 +52,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	getMetaRecursive:{
+,	getmetarecursive:{
 		name:'getMetaRecursive'
 	,	description:''
 	,	args:[
@@ -71,35 +71,35 @@ export const methodsData = {
 			)
 		]
 	}
-,	emptyDir:{
+,	emptydir:{
 		name:'emptyDir'
 	,	description:'Ensures that a directory is empty. If the directory does not exist, it is created. The directory itself is not deleted.'
 	,	args:[
 			src
 		]
 	}
-,	ensureFile:{
+,	ensurefile:{
 		name:'ensureFile'
 	,	description:'Ensures that the file exists. If the file that is requested to be created is in directories that do not exist, these directories are created. If the file already exists, it is NOT MODIFIED.'
 	,	args:[
 			src
 		]
 	}
-,	ensureDir:{
+,	ensuredir:{
 		name:'ensureDir'
 	,	description:'Ensures that the directory exists. If the directory structure does not exist, it is created.'
 	,	args:[
 			src
 		]
 	}
-,	ensureLink:{
+,	ensurelink:{
 		name:'ensureLink'
 	,	description:'Ensures that the link exists. If the directory structure does not exist, it is created.'
 	,	args:[
 			src
 		]
 	}
-,	ensureSymlink:{
+,	ensuresymlink:{
 		name:'ensureSymlink'
 	,	description:'Ensures that the symlink exists. If the directory structure does not exist, it is created.'
 	,	args:[
@@ -131,7 +131,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	outputFile:{
+,	outputfile:{
 		name:'outputFile'
 	,	description:'Almost the same as writeFile (i.e. it overwrites), except that if the parent directory does not exist, it\'s created.'
 	,	args:[
@@ -139,7 +139,7 @@ export const methodsData = {
 		,	data
 		]
 	}
-,	outputJson:{
+,	outputjson:{
 		name:'outputJson'
 	,	description:'Almost the same as writeJson, except that if the directory does not exist, it\'s created.'
 	,	args:[
@@ -147,7 +147,7 @@ export const methodsData = {
 		,	json
 		]
 	}
-,	readJson:{
+,	readjson:{
 		name:'readJson'
 	,	description:'Reads a JSON file and then parses it into an object.'
 	,	args:[
@@ -161,7 +161,7 @@ export const methodsData = {
 			src
 		]
 	}
-,	writeJson:{
+,	writejson:{
 		name:'writeJson'
 	,	description:'Writes an object to a JSON file'
 	,	args:[
@@ -300,7 +300,7 @@ export const methodsData = {
 		,	mtime
 		]
 	}
-,	readFile:{
+,	readfile:{
 		name:'readFile'
 	,	description:''
 	,	args:[
@@ -316,7 +316,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	writeFile:{
+,	writefile:{
 		name:'writeFile'
 	,	description:''
 	,	args:[
@@ -334,7 +334,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	appendFile:{
+,	appendfile:{
 		name:'appendFile'
 	,	description:''
 	,	args:[
@@ -352,7 +352,7 @@ export const methodsData = {
 			)
 		]
 	}
-,	watchFile:{
+,	watchfile:{
 		name:'watchFile'
 	,	description:''
 	,	args:[
@@ -369,7 +369,7 @@ export const methodsData = {
 		,	'listener'
 		]
 	}
-,	unwatchFile:{
+,	unwatchfile:{
 		name:'unwatchFile'
 	,	description:''
 	,	args:[

@@ -14,6 +14,7 @@ promised equivalent to [fs-extra](https://github.com/jprichardson/node-fs-extra)
 - Can read meta-data from audio, images files, and load data from json/xml filesni/yaml files.
 - Can recurse through a directory and apply filters to files
 - Can create an instance of `fsm` boxed to a certain directory (all operations will therefore take root into this directory).
+- It has a text interface that always returns json can be used for GET requests or command-line
 
 ----
 
@@ -225,6 +226,40 @@ publicBoxedfsm.readdir('js',function(err,files){})//...etc
 var publicBoxedFsSync = fsm.boxed(path.join(__dirname,'public'),true);
 var files = publicBoxedfsm.readdir('js')//...etc
 ```
+
+### fsm.makeAPI(rootDir[,options])
+
+options is an object and may contain:
+- `separator`: a string that specifies the separator between arguments. Defaults to ':'
+- `commandSeparator`: a string that specifies the separator between a command and arguments. Defaults to '/'
+
+returns a function `api` of the following signature:
+```js
+api(commandName,args,callback)
+```
+
+where:
+- `commandName` is any fsm command (all lower-cased)
+- `args` is an array of arguments
+- `callback` is a regular nodeback
+
+The `api` function also exposes two other functions: `api.run` and `api.middleware`
+
+api.run has the following signature:
+```js
+api.run(path[,options],cb)
+```
+
+where:
+- `path` is a command and arguments (for example, `move/path/to/file:/destination/path`). The command gets split according to the `separator` and `commandSeparator` specified.
+- `options` is an object of options relevant to the command
+- `cb` is a regular nodeback
+
+api.middleware is a regular `api.middleware(req,res)` suitable for connect or express (it depends on `res.path` being present, `req.query` being parsed, and `res.json` being available). The path gets split according to the same rules as `api.run`.
+
+Any command can be explored by passing `--help` as the first argument. All available commands can be listed by calling the `--help` method (examples: `api.run('--help',(err,res))`, `api('readdir/--help',null,(err,res))`, or `api.middleware({path:'--help'},res)`).
+
+**note**: all errors returned by `api`, `api.run` and `api.middleware` are json objects.
 
 ----
 

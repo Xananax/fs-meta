@@ -1,7 +1,7 @@
 import fs from '../src';
 var rootDir = __dirname+'/fixtures';
 
-describe.skip('# Promise API',()=>{
+describe('# Promise API',()=>{
 	describe('## traverse',()=>{
 		describe('###  traverse(path)',()=>{
 			it('should traverse all files for the given path',done=>{

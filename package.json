@@ -1,11 +1,11 @@
 {
   "name": "fs-meta",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A replacement for the native fs module that does a little more",
   "main": "index.js",
   "scripts": {
     "compile": "babel src --out-dir lib",
-    "test": "mocha --compilers js:babel/register --require should --recursive --ui bdd --reporter spec"
+    "test": "mocha -w --compilers js:babel/register --require should --recursive --ui bdd --reporter spec"
   },
   "keywords": [
     "fs",
