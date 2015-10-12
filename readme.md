@@ -206,13 +206,15 @@ Example of returned object:
 
 Transforms a native node stats object into the json object described above. Used internally by `getMeta` and `getMetaRecursive`. The description of the stat object is below.
 
-### fsm.boxed(rootDirPath[,sync[,unpromised]])
+### fsm.boxed(rootDirPath[,options])
 
 creates a new instance of fs-meta that is constrained to the given `rootDirPath`.
 
 - `rootDirPath`: root directory for all operations
-- `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
-- `unpromised`: if true, will return regular nodebacks-accepting functions
+- `options`: an object that may contain the following properties:
+    + `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
+    + `unpromised`: if true, will return regular nodebacks-accepting functions
+    + `filters`: an array of filters to apply by default to `getMeta` and `getMetaRecursive`
 
 ```js
 var publicBoxedFs = fsm.boxed(path.join(__dirname,'public'));
@@ -232,6 +234,7 @@ var files = publicBoxedfsm.readdir('js')//...etc
 options is an object and may contain:
 - `separator`: a string that specifies the separator between arguments. Defaults to ':'
 - `commandSeparator`: a string that specifies the separator between a command and arguments. Defaults to '/'
+- All other options are transferred to `fsm.boxed` which `makeAPI` uses internally
 
 returns a function `api` of the following signature:
 ```js

@@ -59,8 +59,11 @@ const methodsWithTwoPaths = [
 ,	'move'
 ]
 
-export default function makeBox(rootDir,sync,unpromised){
+export default function makeBox(rootDir,opts){
+	var sync = opts && opts.sync;
 	var methodsFrom = sync ? methodsSync : methods;
+	var filters = opts && opts.filters? opts.filters : [];
+	var unpromised = opts && opts.unpromised
 	var obj = {};
 	for(let name in methods){
 		obj[name] = methods[name];
@@ -77,7 +80,7 @@ export default function makeBox(rootDir,sync,unpromised){
 							cb = options;
 							options = null;
 						}
-						options = Object.assign({},options,{root:obj.root});
+						options = Object.assign({},{root:obj.root,filters},options);
 						return fn(src,options,cb);
 					} 
 					:
