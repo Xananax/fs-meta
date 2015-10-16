@@ -1,9 +1,9 @@
-import valid from '../validators/fileMode';
+import validate from '../validators/fileMode';
 
 export default {
 	name:'mode'
-,	description:''
-,	valid_values:''
-,	required:true
-,	valid
+,	description:'permissons'
+,	valid:'octal'
+,	default:0o666
+,	validate
 }

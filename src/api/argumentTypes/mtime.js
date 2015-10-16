@@ -1,9 +1,8 @@
-import valid from '../validators/systemTime';
+import validate from '../validators/systemTime';
 
 export default {
 	name:'mtime'
-,	description:''
-,	valid_values:''
-,	required:true
-,	valid
+,	description:'modified time'
+,	valid:'time'
+,	validate
 }

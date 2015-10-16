@@ -1,9 +1,8 @@
-import valid from '../validators/uid';
+import validate from '../validators/uid';
 
 export default {
 	name:'uid'
-,	description:''
-,	valid_values:''
-,	required:true
-,	valid
+,	description:'user id'
+,	valid:'number'
+,	validate
 }

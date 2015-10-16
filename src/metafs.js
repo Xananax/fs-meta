@@ -10,7 +10,7 @@ fs.boxed = makeBox;
 fs.syncFs = sync;
 fs.filters = filters;
 fs.statToObj = statToObj;
-fs.makeAPI = function(path){
-	return api(fs,path);
+fs.makeAPI = function(path,opts){
+	return api(fs,path,opts);
 }
 export default fs;

@@ -1,9 +1,10 @@
-import valid from '../validators/string';
+import validate from '../validators/path';
+import coerce from '../coerce/path';
 
 export default {
-	name:'source'
+	name:'src'
 ,	description:'the source path of the operation'
-,	valid_values:''
-,	required:true
-,	valid
+,	valid:'path'
+,	validate
+,	coerce
 }

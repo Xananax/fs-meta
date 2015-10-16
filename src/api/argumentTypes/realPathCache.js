@@ -1,8 +1,7 @@
-import valid from '../validators/object'
+import validate from '../validators/object'
 export default {
 	name:'cache'
-,	description:''
-,	valid_values:''
-,	required:false
-,	valid
+,	description:'a cache object to speed up lookups'
+,	valid:'object'
+,	validate
 }

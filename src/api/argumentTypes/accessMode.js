@@ -8,10 +8,9 @@ function createMask(arr){
 
 export default {
 	name:'mode'
-,	description:''
-,	valid_values:''
-,	required:true
-,	valid(args){
+,	description:'File mode'
+,	valid:['f','r','w','x',F_OK,R_OK,W_OK,X_OK]
+,	validate(args){
 		return (
 			(typeof args == 'number') ||
 			(typeof args == 'string' && args.match(/[frwx]+/))

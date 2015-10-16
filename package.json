@@ -39,6 +39,7 @@
     "should": "^7.1.0"
   },
   "dependencies": {
+    "apido": "^0.5.1",
     "bluebird": "^2.10.2",
     "exif-parser": "^0.1.9",
     "filesize": "^3.1.3",

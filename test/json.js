@@ -1,37 +1,49 @@
 import fs from '../src';
 var rootDir = __dirname+'/fixtures';
-var api = fs.makeAPI(rootDir);
 
 describe('# GET API',()=>{
-	describe('## api(methodName,args,cb)',()=>{
+	describe('## api.run(methodName,args,cb)',()=>{
 		it('should run the command specified by methodName',done=>{
-			api('readdir',['/'],(err,res)=>{
-				res.result.should.be.an.Array();
-				done();
-			});
-		});
-	});
-	describe('## api.run(path,cb)',()=>{
-		it('should run the command specified by methodName',done=>{
-			api.run('readdir/./',(err,res)=>{
-				res.result.should.be.an.Array();
-				done();
-			});
-		});
-	});
-	describe('## api.run(\'--help\',cb)',()=>{
-		it('should return a summary of all commands',done=>{
-			api.run('--help',(err,res)=>{
-				res.result.should.be.an.Object;
-				done();
+			fs.makeAPI(rootDir,{})
+			.then(api=>api.run('readdir',['/']))
+			.then(answer=>{
+				answer.result.should.be.an.Array();
+				answer.result.should.containEql('directory')
+				done()
 			})
+			.error(done)
+		});
+	});
+	describe('## api.runPath(path,cb)',()=>{
+		it('should run the command specified by methodName',done=>{
+			fs.makeAPI(rootDir,{})
+			.then(api=>api.runPath('readdir/directory/subDirectory'))
+			.then(answer=>{
+				answer.result.should.be.an.Array();
+				answer.result.length.should.equal(3);
+				done()
+			})
+			.error(done)
+		});
+	});
+	describe('## api.run(\'help\',cb)',()=>{
+		it('should return a summary of all commands',done=>{
+			fs.makeAPI(rootDir,{})
+			.then(api=>api.runPath('help'))
+			.then(answer=>{
+				answer.result.should.be.an.Object();
+				answer.result.should.have.property('methods');
+				done()
+			})
+			.error(done)
 		})
 	});
-	describe('## api.middleware(req,res)',()=>{
+	describe('## api.middleware(req,res,next)',done=>{
 		it('should',done=>{
 			var req = {
 				path:'getmeta/./'
 			,	query:{}
+			,	method:'GET'
 			}
 			var res = {
 				json(result){
@@ -40,7 +52,9 @@ describe('# GET API',()=>{
 					done();
 				}
 			}
-			api.middleware(req,res);
+			fs.makeAPI(rootDir,{})
+			.then(api=>api.middleware(req,res,done))
+			.error(done)
 		})
 	})
 })

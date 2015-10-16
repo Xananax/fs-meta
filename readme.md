@@ -1,8 +1,18 @@
 # fs-meta
 
-----
+A resilient, cross-platform filesystem API that has a bunch of little pluses. Built on top of [fs-extra](https://github.com/jprichardson/node-fs-extra) and [apido](https://github.com/Xananax/apido).
 
-## Purpose:
+---
+
+# TL;DR:
+
+An API for the file system that can be used from a REST-like interface (or sockets). It does arguments checking, is pluggable in an express server, is self documenting. It also fetches additional information about files that is not available with the regular `stat`.  
+It does it's best to be cross-platform and resilient to Ms Windows idiosyncrasies.
+It also exposes an interface to group files into selections, which can serve to mark files to be copied, or tag files, or whatever your purpose may be. Selections can be persisted through the use of simple adapters.
+
+---
+
+# Key Points:
 
 promised equivalent to [fs-extra](https://github.com/jprichardson/node-fs-extra), with a few key differences:
 
@@ -18,7 +28,7 @@ promised equivalent to [fs-extra](https://github.com/jprichardson/node-fs-extra)
 
 ----
 
-## Usage:
+# Usage:
 
 install:
 
@@ -58,9 +68,11 @@ fsm.readFile('path/to/file',function(err,contents){
 
 ----
 
-## Added Methods:
+# Added Methods:
 
-### fsm.traverse(path[,options],operation)
+fs-meta comprises all the (promisified) methods found on `fs` and `fs-extra`, plus:
+
+### fsm.traverse(path[,options],operation) → Promise
 
 ```js
 function operation(filePath,stats,options,next){
@@ -81,7 +93,7 @@ fsm.traverse(path,options,operation)
 Directories' files are traversed first, and their parent directory *last*.
 
 
-### fsm.readdirp(src[[,options],operation])
+### fsm.readdirp(src[[,options],operation]) → Stream
 
 **There is no sync version of this method**.  
 returns a stream, see [readdirp](https://github.com/thlorenz/readdirp)
@@ -109,7 +121,7 @@ Differences with `traverse`:
 - You do not need to call `next()` for the processing to continue
 
 
-### fsm.getMeta(path[,options])
+### fsm.getMeta(path[,options]) → Promise
 
 **There is no sync version of this method**.  
 
@@ -145,7 +157,7 @@ fsm.getMeta(__dirname,options)
 Available filters and stat object are described below.
 
 
-### fsm.getMetaRecursive(path[,options])
+### fsm.getMetaRecursive(path[,options]) → Promise
 
 **There is no sync version of this method**.  
 
@@ -215,6 +227,7 @@ creates a new instance of fs-meta that is constrained to the given `rootDirPath`
     + `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
     + `unpromised`: if true, will return regular nodebacks-accepting functions
     + `filters`: an array of filters to apply by default to `getMeta` and `getMetaRecursive`
+    + `persistenceAdapter`: an adapter that gets passed to the `group` functions (see below).
 
 ```js
 var publicBoxedFs = fsm.boxed(path.join(__dirname,'public'));
@@ -229,7 +242,7 @@ var publicBoxedFsSync = fsm.boxed(path.join(__dirname,'public'),true);
 var files = publicBoxedfsm.readdir('js')//...etc
 ```
 
-### fsm.makeAPI(rootDir[,options])
+### fsm.makeAPI(rootDir[,options]) → Promise
 
 options is an object and may contain:
 - `separator`: a string that specifies the separator between arguments. Defaults to ':'
@@ -238,38 +251,104 @@ options is an object and may contain:
 
 returns a function `api` of the following signature:
 ```js
-api(commandName,args,callback)
+fsm.makeAPI(__dirname)
+.then(api=>{
+    return api.run(commandName,args)
+})
+.then(answer=>{
+    console.log(answer)
+})
+.error(err=>{throw err;})
 ```
 
 where:
-- `commandName` is any fsm command (all lower-cased)
-- `args` is an array of arguments
-- `callback` is a regular nodeback
+- `commandName` is any fsm command
+- `args` is an array or object of arguments
 
-The `api` function also exposes two other functions: `api.run` and `api.middleware`
-
-api.run has the following signature:
-```js
-api.run(path[,options],cb)
-```
-
-where:
-- `path` is a command and arguments (for example, `move/path/to/file:/destination/path`). The command gets split according to the `separator` and `commandSeparator` specified.
-- `options` is an object of options relevant to the command
-- `cb` is a regular nodeback
-
-api.middleware is a regular `api.middleware(req,res)` suitable for connect or express (it depends on `res.path` being present, `req.query` being parsed, and `res.json` being available). The path gets split according to the same rules as `api.run`.
-
-Any command can be explored by passing `--help` as the first argument. All available commands can be listed by calling the `--help` method (examples: `api.run('--help',(err,res))`, `api('readdir/--help',null,(err,res))`, or `api.middleware({path:'--help'},res)`).
-
-Other commands are exposed to allow oneself to compose their own middleware:
-`api.isValidCommand`, `api.getCommandFromArguments` `api.parsePathToArguments`. Check out the source for more info.
+For more info, check out the readme at [apido](https://github.com/Xananax/apido)
 
 **note**: all errors returned by `api`, `api.run` and `api.middleware` are json objects.
 
+
+### fsm.groupCreate(groupName[,persistence]) → Promise
+
+- `groupName`: string
+If successful, returns a promise with the following signature:
+```js
+fsm.groupCreate(groupName)
+.then(answer=>{
+    answer.result = {
+        id:'something'
+    ,   name:'what you provided'
+    }
+})
+```
+
+
+### fsm.groupAdd(where,{files,groups,adapter}) → Promise
+
+- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
+- `options.files`:an array of files paths
+- `options.groups`:an array of groups ids
+- `options.adapter`: an adapter to call on changes (see below)
+
+Adds the given files and groups to the group designed by "where". If the group doesn't exist, and a name was provided, it is created. If the group exists, it is updated (new files and groups are appended to the existing files and groups)
+
+### fsm.groupRemove(where,{files,groups,adapter}) → Promise
+
+- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
+- `options.files`:an array of files paths
+- `options.groups`:an array of groups ids
+- `options.adapter`: an adapter to call on changes (see below)
+
+Removes the given files and groups from the group designed by `where`. The promise is rejected if the group is not found.
+
+### fsm.groupGet(where,{recursion,adapter}]) → Promise
+
+- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
+- `options.recursion`: an integer to specify how deep the fetching should go.
+- `options.adapter`: an adapter to call on changes (see below)
+
+### fsm.groupsSet(groups,files) → Promise
+
+Populates the database.
+
+- `groups`: should be an array of group objects. A group has the following signature:
+```js
+{
+    name:'a string'
+,   id:'a string or number'
+,   groups:[]//array of ids
+,   files:[] //array of paths
+}
+```
+
+- `files`: an array of file objects. A file object has the following signature:
+```js
+{
+    path:'a string'
+}
+```
+
+
+### group adapter
+
+An adapter is an object with five methods:
+```js
+var adapter = {
+    create(groupId,groupName,files,groups,cb)
+    read(groupId,groupName,cb)
+    update(groupId,groupName,files,groups,cb)
+    delete(groupId,groupName,cb)
+}
+```
+
+All methods are guaranteed to be passed either `groupId` or `groupName`.
+
+
 ----
 
-### Global Properties
+# Global Properties
 
 ### fsm.syncFs
 
@@ -285,9 +364,9 @@ Pre-made filters for usage in `getMeta` and `getMetaRecursive`. Filters are desc
 
 -----
 
-### Stat Object
+# 'Meta' Object
 
-The `stat` object used in `getMeta` and `getMetaRecursive` contains the following properties:
+The `meta` object used in `getMeta` and `getMetaRecursive` contains the following properties:
 
 - `basename`: the name of the file, without extension
 - `filename`: the name of the file, with extension
@@ -314,18 +393,18 @@ This object is augmented by the filters that get applied.
 
 A filter has the following signature:
 ```js
-function customFilter(stats,options,next,fs){
-    trySomething(stats,(err,properties){
+function customFilter(meta,options,next,fs){
+    trySomething(meta,(err,properties){
         if(err){return next(err);}
-        stats.newProperty = properties.newProperty;
-        next(null,stats);
+        meta.newProperty = properties.newProperty;
+        next(null,meta);
     })
 }
 ```
 
-- `stats` is the transformed `stats` object described above
+- `meta` is the transformed `meta` object described above
 - `options` is whatever you passed to `getMeta` or `getMetaRecursive`. You may add your own properties, if you want to.
-- `next` is the function you should call when you're done processing. It is a regular nodeback, call it with `error` as the first argument, or the `stats` object as the second argument.
+- `next` is the function you should call when you're done processing. It is a regular nodeback, call it with `error` as the first argument, or the `meta` object as the second argument.
 - `fs` is a `graceful-fs` instance (in other words, no promises or additional functions are available on this instance).
 
 ### Available filters:

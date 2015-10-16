@@ -1,6 +1,5 @@
 export default {
 	name:'data'
-,	description:''
-,	valid_values:''
-,	required:true
+,	description:'data to be written'
+,	valid:'string'
 }
