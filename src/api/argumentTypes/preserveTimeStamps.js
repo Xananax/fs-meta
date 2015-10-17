@@ -2,7 +2,7 @@ import validate from '../validators/boolean';
 import coerce from '../coerce/boolean';
 
 export default {
-	name:'clobber'
+	name:'preserveTimestamps'
 ,	description:'will set last modification and access times to the ones of the original source files.'
 ,	valid:'boolean'
 ,	default:false
