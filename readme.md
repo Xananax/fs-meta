@@ -8,7 +8,6 @@ A resilient, cross-platform filesystem API that has a bunch of little pluses. Bu
 
 An API for the file system that can be used from a REST-like interface (or sockets). It does arguments checking, is pluggable in an express server, is self documenting. It also fetches additional information about files that is not available with the regular `stat`.  
 It does it's best to be cross-platform and resilient to Ms Windows idiosyncrasies.
-It also exposes an interface to group files into selections, which can serve to mark files to be copied, or tag files, or whatever your purpose may be. Selections can be persisted through the use of simple adapters.
 
 ---
 
@@ -227,7 +226,6 @@ creates a new instance of fs-meta that is constrained to the given `rootDirPath`
     + `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
     + `unpromised`: if true, will return regular nodebacks-accepting functions
     + `filters`: an array of filters to apply by default to `getMeta` and `getMetaRecursive`
-    + `persistenceAdapter`: an adapter that gets passed to the `group` functions (see below).
 
 ```js
 var publicBoxedFs = fsm.boxed(path.join(__dirname,'public'));
@@ -268,82 +266,6 @@ where:
 For more info, check out the readme at [apido](https://github.com/Xananax/apido)
 
 **note**: all errors returned by `api`, `api.run` and `api.middleware` are json objects.
-
-
-### fsm.groupCreate(groupName[,persistence]) → Promise
-
-- `groupName`: string
-If successful, returns a promise with the following signature:
-```js
-fsm.groupCreate(groupName)
-.then(answer=>{
-    answer.result = {
-        id:'something'
-    ,   name:'what you provided'
-    }
-})
-```
-
-
-### fsm.groupAdd(where,{files,groups,adapter}) → Promise
-
-- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
-- `options.files`:an array of files paths
-- `options.groups`:an array of groups ids
-- `options.adapter`: an adapter to call on changes (see below)
-
-Adds the given files and groups to the group designed by "where". If the group doesn't exist, and a name was provided, it is created. If the group exists, it is updated (new files and groups are appended to the existing files and groups)
-
-### fsm.groupRemove(where,{files,groups,adapter}) → Promise
-
-- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
-- `options.files`:an array of files paths
-- `options.groups`:an array of groups ids
-- `options.adapter`: an adapter to call on changes (see below)
-
-Removes the given files and groups from the group designed by `where`. The promise is rejected if the group is not found.
-
-### fsm.groupGet(where,{recursion,adapter}]) → Promise
-
-- `where`: an object with either a key `id` or a key `name`. If both are provided, `id` will be preferred.
-- `options.recursion`: an integer to specify how deep the fetching should go.
-- `options.adapter`: an adapter to call on changes (see below)
-
-### fsm.groupsSet(groups,files) → Promise
-
-Populates the database.
-
-- `groups`: should be an array of group objects. A group has the following signature:
-```js
-{
-    name:'a string'
-,   id:'a string or number'
-,   groups:[]//array of ids
-,   files:[] //array of paths
-}
-```
-
-- `files`: an array of file objects. A file object has the following signature:
-```js
-{
-    path:'a string'
-}
-```
-
-
-### group adapter
-
-An adapter is an object with five methods:
-```js
-var adapter = {
-    create(groupId,groupName,files,groups,cb)
-    read(groupId,groupName,cb)
-    update(groupId,groupName,files,groups,cb)
-    delete(groupId,groupName,cb)
-}
-```
-
-All methods are guaranteed to be passed either `groupId` or `groupName`.
 
 
 ----

@@ -1,6 +1,5 @@
 import src from '../argumentTypes/src';
 import data from '../argumentTypes/data';
-import options from '../makeOptionsArgument';
 import encoding from '../argumentTypes/encoding';
 import mode from '../argumentTypes/mode';
 import flag from '../argumentTypes/fileFlag';
