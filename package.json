@@ -1,6 +1,6 @@
 {
   "name": "fs-meta",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A replacement for the native fs module that does a little more",
   "main": "index.js",
   "scripts": {
@@ -34,12 +34,11 @@
   "license": "MIT",
   "devDependencies": {
     "babel": "^5.8.23",
-    "babel-loader": "^5.3.2",
     "mocha": "^2.3.3",
     "should": "^7.1.0"
   },
   "dependencies": {
-    "apido": "^0.5.1",
+    "apido": "^0.5.6",
     "bluebird": "^2.10.2",
     "exif-parser": "^0.1.9",
     "filesize": "^3.1.3",
