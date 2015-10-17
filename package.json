@@ -1,6 +1,6 @@
 {
   "name": "fs-meta",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A replacement for the native fs module that does a little more",
   "main": "index.js",
   "scripts": {
