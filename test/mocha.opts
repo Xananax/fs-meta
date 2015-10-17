@@ -1,0 +1,6 @@
+./test/tests/*.js
+--compilers js:babel/register
+--require should
+--recursive
+--ui bdd
+--reporter spec

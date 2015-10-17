@@ -1,5 +1,6 @@
-import fs from '../src';
-var rootDir = __dirname+'/fixtures';
+import fs from '../../src';
+import path from 'path';
+var rootDir = path.resolve(__dirname+'/../fixtures');
 
 describe('# GET API',()=>{
 	describe('## api.run(methodName,args,cb)',()=>{
