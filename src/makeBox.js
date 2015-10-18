@@ -1,5 +1,6 @@
 import methods from './methods';
 import methodsSync from './methodsSync';
+import collectionFactory from './collectionFactory';
 import Promise from 'bluebird';
 
 const methodsReturnsPath = [
@@ -68,6 +69,7 @@ export default function makeBox(rootDir,opts){
 	for(let name in methods){
 		obj[name] = methods[name];
 	}
+	obj.collections = collectionFactory(obj,opts);
 	if(rootDir){
 		obj.root = rootDir.replace(/\/$/,'');
 		for(let name of methodsWithPath){
@@ -75,7 +77,7 @@ export default function makeBox(rootDir,opts){
 				let fn = obj[name];
 				obj[name] = methodsReturnsPath.indexOf(name)>=0 ?
 					function boxedToRootReturnsPath(src,options,cb){
-						src = src ? obj.root+src : obj.root;
+						src = src ? obj.root+'/'+src : obj.root;
 						if(typeof options == 'function'){
 							cb = options;
 							options = null;
@@ -85,8 +87,7 @@ export default function makeBox(rootDir,opts){
 					} 
 					:
 					function boxedToRoot(src,...args){
-						src = src ? obj.root+src : obj.root;
-						console.log(name,src)
+						src = src ? obj.root+'/'+src : obj.root;
 						return fn(src,...args);
 					}
 			}
@@ -95,8 +96,8 @@ export default function makeBox(rootDir,opts){
 			if(obj[name]){
 				let fn = obj[name] 
 				obj[name] = function boxedToRootTwoPaths(src,dest,...args){
-					src = src ? obj.root + src : obj.root;
-					dest = dest ? obj.root + dest : obj.root;
+					src = src ? obj.root + '/' + src : obj.root;
+					dest = dest ? obj.root + '/' + dest : obj.root;
 					return fn(src,dest,...args);
 				}
 			}

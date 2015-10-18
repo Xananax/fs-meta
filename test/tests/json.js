@@ -3,10 +3,10 @@ import path from 'path';
 var rootDir = path.resolve(__dirname+'/../fixtures');
 
 describe('# GET API',()=>{
-	describe('## api.run(methodName,args,cb)',()=>{
-		it('should run the command specified by methodName',done=>{
+	describe('## api.runCommand(commandName,args,cb)',()=>{
+		it('should runCommand the command specified by commandName',done=>{
 			fs.makeAPI(rootDir,{})
-			.then(api=>api.run('readdir',['/']))
+			.then(api=>api.runCommand('readdir',['/']))
 			.then(answer=>{
 				answer.result.should.be.an.Array();
 				answer.result.should.containEql('directory')
@@ -16,7 +16,7 @@ describe('# GET API',()=>{
 		});
 	});
 	describe('## api.runPath(path,cb)',()=>{
-		it('should run the command specified by methodName',done=>{
+		it('should runCommand the command specified by commandName',done=>{
 			fs.makeAPI(rootDir,{})
 			.then(api=>api.runPath('readdir/directory/subDirectory'))
 			.then(answer=>{
@@ -27,13 +27,13 @@ describe('# GET API',()=>{
 			.error(done)
 		});
 	});
-	describe('## api.run(\'help\',cb)',()=>{
+	describe('## api.runCommand(\'help\',cb)',()=>{
 		it('should return a summary of all commands',done=>{
 			fs.makeAPI(rootDir,{})
 			.then(api=>api.runPath('help'))
 			.then(answer=>{
 				answer.result.should.be.an.Object();
-				answer.result.should.have.property('methods');
+				answer.result.should.have.property('commands');
 				done()
 			})
 			.error(done)
@@ -42,9 +42,9 @@ describe('# GET API',()=>{
 	describe('## api.middleware(req,res,next)',done=>{
 		it('should',done=>{
 			var req = {
-				path:'getmeta/./'
+				path:'/getMeta/./'
 			,	query:{}
-			,	method:'GET'
+			,	command:'GET'
 			}
 			var res = {
 				json(result){

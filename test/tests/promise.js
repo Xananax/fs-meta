@@ -13,7 +13,7 @@ describe('# Promise API',()=>{
 					next();
 				})
 				.then(()=>{
-					counter.should.equal(14);
+					counter.should.equal(15);
 					done();
 				})
 				.error(done);
@@ -27,7 +27,7 @@ describe('# Promise API',()=>{
 					next();
 				})
 				.then(()=>{
-					counter.should.equal(4);
+					counter.should.equal(5);
 					done();
 				})
 				.error(done);
@@ -95,7 +95,7 @@ describe('# Promise API',()=>{
 					counter++;
 				})
 				.then(()=>{
-					counter.should.equal(13);
+					counter.should.equal(14);
 					done();
 				})
 				.error(done)
@@ -108,7 +108,7 @@ describe('# Promise API',()=>{
 					counter++;
 				})
 				.then(()=>{
-					counter.should.equal(13);
+					counter.should.equal(14);
 					done();
 				})
 				.error(done)
@@ -231,7 +231,7 @@ describe('# Promise API',()=>{
 				var boxed = fs.boxed(rootDir);
 				boxed.readdir('')
 				.then(files=>{
-					files.length.should.equal(3);
+					files.length.should.equal(4);
 					done()
 				})
 				.error(done)
@@ -240,7 +240,7 @@ describe('# Promise API',()=>{
 		describe('## boxed(rootDir).getMeta',()=>{
 			it('should return meta properties with `rootDir` removed',done=>{
 				var boxed = fs.boxed(rootDir);
-				boxed.getMeta('/directory')
+				boxed.getMeta('directory')
 				.then(meta=>{
 					meta.path.should.equal('/directory')
 					done()

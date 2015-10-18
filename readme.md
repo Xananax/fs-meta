@@ -7,6 +7,7 @@ A resilient, cross-platform filesystem API that has a bunch of little pluses. Bu
 # TL;DR:
 
 An API for the file system that can be used from a REST-like interface (or sockets). It does arguments checking, is pluggable in an express server, is self documenting. It also fetches additional information about files that is not available with the regular `stat`.  
+It also has a 'collection' interface that allows you to bundle files into collections (virtual directories). Collections can be nested in collections.
 It does it's best to be cross-platform and resilient to Ms Windows idiosyncrasies.
 
 ---
@@ -24,6 +25,7 @@ promised equivalent to [fs-extra](https://github.com/jprichardson/node-fs-extra)
 - Can recurse through a directory and apply filters to files
 - Can create an instance of `fsm` boxed to a certain directory (all operations will therefore take root into this directory).
 - It has a text interface that always returns json can be used for GET requests or command-line
+- `collections` interface that allows to create, remove, and nest collections. Collections can be used to save selections of files, as tags, or whatever else tickles your fancy.
 
 ----
 
@@ -212,12 +214,40 @@ Example of returned object:
 }
 ```
 
+### fsm.collections(commandName,options) → Promise
 
-### fsm.statToObj(stats)
+where `commandName` is one of `add`,`remove`,`edit`,`dump`,`save`, or `load`, and options is an object (group, or file).
+A group has the properties `name`,`groups`(array of group ids), `files`(array of file ids). A file has the properties `path`, and `groups`(an array of group ids).
+
+`edit` and `remove` require an `id` key.
+
+example commands:
+```js
+collections("add",{file:'/path/to/file'}).then(/*...*/).error(/*...*/)
+collections("add",{file:{path:'/path/to/file',groups:['id9']}}).then(/*...*/).error(/*...*/)
+collections("add",{group:'a group'}).then(/*...*/).error(/*...*/)
+collections("add",{group:{name:'a group',files:['fileId1'],groups['groupId']}}).then(/*...*/).error(/*...*/)
+collections('edit',{group:{id:'groupId',name:'anotherName'}}).then(/*...*/).error(/*...*/)
+collections('get',{group_id:'groupId'}).then(/*...*/).error(/*...*/)
+collections('get',{group:'groupId'}).then(/*...*/).error(/*...*/)
+collections('get',{group_name:'a group'}).then(/*...*/).error(/*...*/)
+collections('save').then(/*...*/).error(/*...*/)
+collections('load').then(/*...*/).error(/*...*/)
+collections('dump').then(/*...*/).error(/*...*/)
+```
+
+You can set a persistence adapter in two ways; either pass an `adapter` property to `fsm.boxed`, or set the adapter later with
+`collections.adapter(new adapter)`.
+
+The default memoryAdapter provided has a bare-bones persistence functionality, not suitable for production. To enable it, pass `collectionPersist` to `fsm.boxed`, where `collectionPersist` is either a filename, or `true`.
+
+Refer to the tests for more info.
+
+### fsm.statToObj(stats) → Object
 
 Transforms a native node stats object into the json object described above. Used internally by `getMeta` and `getMetaRecursive`. The description of the stat object is below.
 
-### fsm.boxed(rootDirPath[,options])
+### fsm.boxed(rootDirPath[,options]) → fs-meta instance
 
 creates a new instance of fs-meta that is constrained to the given `rootDirPath`.
 
@@ -226,6 +256,8 @@ creates a new instance of fs-meta that is constrained to the given `rootDirPath`
     + `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
     + `unpromised`: if true, will return regular nodebacks-accepting functions
     + `filters`: an array of filters to apply by default to `getMeta` and `getMetaRecursive`
+    + `adapter`: an adapter for using collections. To see an example api, check out the directory `collectionFactory/memoryAdapter/memoryAdapter.js`
+    + `collectionPersist`: A flag for the default memoryAdapter used in collections. If true, the database will be saved to disk. If a string, the database will be saved to that filename.
 
 ```js
 var publicBoxedFs = fsm.boxed(path.join(__dirname,'public'));

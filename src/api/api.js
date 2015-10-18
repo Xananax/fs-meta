@@ -1,5 +1,5 @@
 import apido from 'apido';
-import methodsMaker from './methods';
+import commandsMaker from './commands';
 import fs from '../'
 import Promise from 'bluebird'
 
@@ -10,12 +10,12 @@ export default Promise.promisify(function makeAPI(fs,path,options,cb){
 	}
 
 	const boxed = fs.boxed(path,options);
-	const methods = methodsMaker(boxed,options);
+	const commands = commandsMaker(boxed,options);
 
 	apido({
 		name:'fs'
 	,	description:'file system manager'
-	,	methods
+	,	commands
 	})
 	.then(api=>{
 		cb(null,api);
