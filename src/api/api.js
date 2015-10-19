@@ -1,9 +1,9 @@
 import apido from 'apido';
 import commandsMaker from './commands';
-import fs from '../'
 import Promise from 'bluebird'
 
 export default Promise.promisify(function makeAPI(fs,path,options,cb){
+	
 	if(typeof options == 'function'){
 		cb = options;
 		options = null;

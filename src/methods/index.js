@@ -13,7 +13,7 @@ for(let name of fsMethods){
 	methods[name] = fs[name];
 }
 for(let name of fsExtraMethods){
-	methods[name] = fs[name]
+	methods[name] = fs[name];
 }
 Object.assign(methods,{
 	exists(src,cb){

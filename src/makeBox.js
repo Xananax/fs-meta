@@ -1,6 +1,5 @@
 import methods from './methods';
 import methodsSync from './methodsSync';
-import collectionFactory from './collectionFactory';
 import Promise from 'bluebird';
 
 const methodsReturnsPath = [
@@ -49,6 +48,7 @@ const methodsWithPath = [
 ,	'writeJson'
 ,	'getMeta'
 ,	'getMetaRecursive'
+,	'readdirp'
 ]
 
 const methodsWithTwoPaths = [
@@ -60,6 +60,9 @@ const methodsWithTwoPaths = [
 ,	'move'
 ]
 
+const lastSlashRegex = /\/$/
+const firstSlashRegex = /^\//
+
 export default function makeBox(rootDir,opts){
 	var sync = opts && opts.sync;
 	var methodsFrom = sync ? methodsSync : methods;
@@ -69,15 +72,17 @@ export default function makeBox(rootDir,opts){
 	for(let name in methods){
 		obj[name] = methods[name];
 	}
-	obj.collections = collectionFactory(obj,opts);
 	if(rootDir){
-		obj.root = rootDir.replace(/\/$/,'');
+		obj.root = rootDir.replace(lastSlashRegex,'');
 		for(let name of methodsWithPath){
 			if(obj[name]){
-				let fn = obj[name];
+				let fn = (opts && opts.methods && opts.methods[name]) ? 
+					opts.methods[name].bind({super:obj[name]}) : 
+					obj[name]
+				;
 				obj[name] = methodsReturnsPath.indexOf(name)>=0 ?
 					function boxedToRootReturnsPath(src,options,cb){
-						src = src ? obj.root+'/'+src : obj.root;
+						src = src ? obj.root+'/'+src.replace(firstSlashRegex,'') : obj.root;
 						if(typeof options == 'function'){
 							cb = options;
 							options = null;
@@ -87,17 +92,20 @@ export default function makeBox(rootDir,opts){
 					} 
 					:
 					function boxedToRoot(src,...args){
-						src = src ? obj.root+'/'+src : obj.root;
+						src = src ? obj.root+'/'+src.replace(firstSlashRegex,'') : obj.root;
 						return fn(src,...args);
 					}
 			}
 		}
 		for(let name of methodsWithTwoPaths){
 			if(obj[name]){
-				let fn = obj[name] 
+				let fn = (opts && opts.methods && opts.methods[name]) ? 
+					opts.methods[name].bind({super:obj[name]}):
+					obj[name]
+				;
 				obj[name] = function boxedToRootTwoPaths(src,dest,...args){
-					src = src ? obj.root + '/' + src : obj.root;
-					dest = dest ? obj.root + '/' + dest : obj.root;
+					src = src ? obj.root +'/'+src.replace(firstSlashRegex,'') : obj.root;
+					dest = dest ? obj.root +'/'+ dest.replace(firstSlashRegex,'') : obj.root;
 					return fn(src,dest,...args);
 				}
 			}

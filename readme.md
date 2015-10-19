@@ -17,15 +17,15 @@ It does it's best to be cross-platform and resilient to Ms Windows idiosyncrasie
 promised equivalent to [fs-extra](https://github.com/jprichardson/node-fs-extra), with a few key differences:
 
 - All async functions are promisified by default (but you can opt out of that)
-- Async and sync versions are on two different objects. To use async functions, require `('fs-meta')`, and for sync versions, require `('fs-meta').syncFs`
+- Async and sync versions are on two different objects. To use async functions, require `('fs-meta')`, and for sync versions, require `('fs-meta').sync`
 - `readDir` is a proxy for `readdir` (finally, no more stupid typos).
 - `exists` is made to follow nodeback protocol (eg: `fsm.exists(file,(err,exists))`) and is as such promisified too
-- Bundles [readdirp](https://github.com/thlorenz/readdirp) as `fsm.readdirp`
-- Can read meta-data from audio, images files, and load data from json/xml filesni/yaml files.
+- Bundles [readdirp](https://github.com/thlorenz/readdirp) available on `fsm.readdirp`
+- Can read meta-data from audio, images files, and load data from json/xml filesni/yaml files. You can add your own filters
 - Can recurse through a directory and apply filters to files
-- Can create an instance of `fsm` boxed to a certain directory (all operations will therefore take root into this directory).
-- It has a text interface that always returns json can be used for GET requests or command-line
-- `collections` interface that allows to create, remove, and nest collections. Collections can be used to save selections of files, as tags, or whatever else tickles your fancy.
+- Can create an instance of `fsm` restricted to a certain directory (all operations will therefore take root into this directory). The feature is called `boxed`.
+- It has a text interface that always returns json. Can be used for GET requests or command-line
+- All methods are self-scoped. In other words, you can do `import {readFile} from 'fs-meta'`
 
 ----
 
@@ -48,16 +48,16 @@ fsm.readFile('path/to/file')
 
 ```
 
-or:
+or sync:
 
 ```js
-var fsm = require('fs-meta').syncFs;
+var fsm = require('fs-meta').sync;
 
 var contents = fsm.readFile('path/to/file');
 //etc
 ```
 
-or
+or without promises:
 
 ```js
 var fsm = require('fs-meta').unpromised;
@@ -67,13 +67,72 @@ fsm.readFile('path/to/file',function(err,contents){
 })
 ```
 
+or as an api:
+
+```js
+fsm.makeAPI(rootDir)
+    .then(api=>api.runCommand('readdir',['/']))
+    .then(answer=>{
+        console.log(answer.result) // array of files
+    })
+    .error(done)
+```
+
 ----
 
-# Added Methods:
+# Methods:
 
-fs-meta comprises all the (promisified) methods found on `fs` and `fs-extra`, plus:
+## All 'fs' and 'fs-extra' methods:
 
-### fsm.traverse(path[,options],operation) → Promise
+- `rename`
+- `ftruncate`
+- `truncate`
+- `chown`
+- `fchown`
+- `lchown`
+- `chmod`
+- `fchmod`
+- `lchmod`
+- `stat`
+- `lstat`
+- `fstat`
+- `link`
+- `symlink`
+- `readlink`
+- `realpath`
+- `unlink`
+- `rmdir`
+- `mkdir`
+- `readdir`
+- `close`
+- `open`
+- `utimes`
+- `futimes`
+- `fsync`
+- `write`
+- `read`
+- `readFile`
+- `writeFile`
+- `appendFile`
+- `watchFile`
+- `unwatchFile`
+- `watch`
+- `access`
+- `copy`
+- `createOutputStream`
+- `emptyDir`
+- `ensureFile`
+- `ensureDir`
+- `ensureLink`
+- `ensureSymlink`
+- `mkdirs`
+- `move`
+- `outputJson`
+- `readJson`
+- `remove`
+- `writeJson`
+
+## fsm.traverse(path[,options],operation) → Promise
 
 ```js
 function operation(filePath,stats,options,next){
@@ -94,7 +153,7 @@ fsm.traverse(path,options,operation)
 Directories' files are traversed first, and their parent directory *last*.
 
 
-### fsm.readdirp(src[[,options],operation]) → Stream
+## fsm.readdirp(src[[,options],operation]) → Stream
 
 **There is no sync version of this method**.  
 returns a stream, see [readdirp](https://github.com/thlorenz/readdirp)
@@ -124,7 +183,7 @@ Differences with `traverse`:
 
 ### fsm.getMeta(path[,options]) → Promise
 
-**There is no sync version of this method**.  
+**There is no synchronous version of this method**.  
 
 Similar to `stats`, but with three differences:
 
@@ -158,9 +217,9 @@ fsm.getMeta(__dirname,options)
 Available filters and stat object are described below.
 
 
-### fsm.getMetaRecursive(path[,options]) → Promise
+## fsm.getMetaRecursive(path[,options]) → Promise
 
-**There is no sync version of this method**.  
+**There is no synchronous version of this method**.  
 
 Bundles `getMeta` and `traverse`.  
 Options are:
@@ -214,36 +273,7 @@ Example of returned object:
 }
 ```
 
-### fsm.collections(commandName,options) → Promise
-
-where `commandName` is one of `add`,`remove`,`edit`,`dump`,`save`, or `load`, and options is an object (group, or file).
-A group has the properties `name`,`groups`(array of group ids), `files`(array of file ids). A file has the properties `path`, and `groups`(an array of group ids).
-
-`edit` and `remove` require an `id` key.
-
-example commands:
-```js
-collections("add",{file:'/path/to/file'}).then(/*...*/).error(/*...*/)
-collections("add",{file:{path:'/path/to/file',groups:['id9']}}).then(/*...*/).error(/*...*/)
-collections("add",{group:'a group'}).then(/*...*/).error(/*...*/)
-collections("add",{group:{name:'a group',files:['fileId1'],groups['groupId']}}).then(/*...*/).error(/*...*/)
-collections('edit',{group:{id:'groupId',name:'anotherName'}}).then(/*...*/).error(/*...*/)
-collections('get',{group_id:'groupId'}).then(/*...*/).error(/*...*/)
-collections('get',{group:'groupId'}).then(/*...*/).error(/*...*/)
-collections('get',{group_name:'a group'}).then(/*...*/).error(/*...*/)
-collections('save').then(/*...*/).error(/*...*/)
-collections('load').then(/*...*/).error(/*...*/)
-collections('dump').then(/*...*/).error(/*...*/)
-```
-
-You can set a persistence adapter in two ways; either pass an `adapter` property to `fsm.boxed`, or set the adapter later with
-`collections.adapter(new adapter)`.
-
-The default memoryAdapter provided has a bare-bones persistence functionality, not suitable for production. To enable it, pass `collectionPersist` to `fsm.boxed`, where `collectionPersist` is either a filename, or `true`.
-
-Refer to the tests for more info.
-
-### fsm.statToObj(stats) → Object
+## fsm.statToObj(stats) → Object
 
 Transforms a native node stats object into the json object described above. Used internally by `getMeta` and `getMetaRecursive`. The description of the stat object is below.
 
@@ -256,20 +286,43 @@ creates a new instance of fs-meta that is constrained to the given `rootDirPath`
     + `sync`: if `true`, will provide a sync version of fs-meta (that is, all methods will be sync methods);
     + `unpromised`: if true, will return regular nodebacks-accepting functions
     + `filters`: an array of filters to apply by default to `getMeta` and `getMetaRecursive`
-    + `adapter`: an adapter for using collections. To see an example api, check out the directory `collectionFactory/memoryAdapter/memoryAdapter.js`
-    + `collectionPersist`: A flag for the default memoryAdapter used in collections. If true, the database will be saved to disk. If a string, the database will be saved to that filename.
+    + `methods`: an object of methods that map to fsm methods. Each method provided will wrap the fsm method and be provided with a `this.super` that allows it to call the original method.
 
 ```js
-var publicBoxedFs = fsm.boxed(path.join(__dirname,'public'));
-publicBoxedfsm.readdir('js'),then()//...etc
+var boxedFsm = fsm.boxed(path.join(__dirname,'public'));
+boxedFsm.readdir('js'),then()//...etc
 
 // or:
-var publicBoxedFsNoPromises = fsm.boxed(path.join(__dirname,'public'),false,true);
-publicBoxedfsm.readdir('js',function(err,files){})//...etc
+var boxedFsmNoPromises = fsm.boxed(path.join(__dirname,'public'),{unpromised:true});
+boxedFsmNoPromises.readdir('js',function(err,files){})//...etc
 
 //or:
-var publicBoxedFsSync = fsm.boxed(path.join(__dirname,'public'),true);
-var files = publicBoxedfsm.readdir('js')//...etc
+var boxedFsmSync = fsm.boxed(path.join(__dirname,'public'),{sync:true});
+var files = boxedFsmSync.readdir('js')//...etc
+```
+
+Example of method wrapping:
+
+```js
+var options = {
+    methods:{                   
+        stat(filename,cb){
+            console.log(`stat called for ${filename}`)
+            this.super(filename,(err,stat)=>{
+                if(err){cb(err);}
+                stat.someNewProperty = 'property';
+                cb(null,stat);
+            })
+        }
+    }
+});
+
+fsm.boxed(dir,options).stat('some/path')
+    .then(stat=>{
+        // stat.someNewProperty = 'property'
+    })
+    .error(/**...**/)
+;
 ```
 
 ### fsm.makeAPI(rootDir[,options]) → Promise
@@ -304,7 +357,7 @@ For more info, check out the readme at [apido](https://github.com/Xananax/apido)
 
 # Global Properties
 
-### fsm.syncFs
+### fsm.sync
 
 Provides a copy of fs-meta, but with all sync methods.
 
