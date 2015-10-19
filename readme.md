@@ -325,7 +325,28 @@ fsm.boxed(dir,options).stat('some/path')
 ;
 ```
 
-## fsm.makeAPI(rootDir[,options]) → Promise
+---
+
+## apiFactory(rootDir[,options]) → Promise
+
+Creates an api through [apido](https://github.com/Xananax/apido).
+apido needs to be installed:
+
+```bash
+npm install --save apido
+```
+
+
+```js
+import {boxed} from 'fs-meta';
+import {apiFactory} from 'fs-meta/src/api'; //(or fs-meta/lib/api) if not using ES6
+
+apiFactory(boxed(rootDir),{})
+    .then(api=>{
+        //api is ready
+    })
+    .error(done)
+```
 
 options is an object and may contain:
 - `separator`: a string that specifies the separator between arguments. Defaults to ':'
@@ -351,6 +372,35 @@ where:
 For more info, check out the readme at [apido](https://github.com/Xananax/apido)
 
 **note**: all errors returned by `api`, `api.run` and `api.middleware` are json objects.
+
+Instead of using the default `apiFactory` provided, you can compose your own. This would allow you to add your own commands and customizations:
+
+```js
+import apido from 'apido'
+import {boxed} from 'fs-meta'
+import commandsProps from 'fs-meta/src/commands'; //apido-compatible list of commands
+
+const fs = boxed('/some/dir');
+
+const additionalMethods = [
+    {
+        name:'addTodo'
+    ,   parameters:[]
+    ,   run(props,cb){}
+    }
+]
+
+function makeAPI(cb){
+
+    apido({
+        name:'fs'
+    ,   description:'file system manager'
+    ,   commands:commandsProps.map(command=>command(fs)).concat(additionalMethods)
+    })
+    .then(api=>cb(null,api))
+    .error(cb)
+}
+```
 
 
 ----
@@ -416,11 +466,20 @@ function customFilter(meta,options,next,fs){
 
 ## Available filters:
 
-All filters are exposed on `fsm.filters`. They are:
+All filters are exposed on `fsm.filters`. They require dependencies that are not included by default. To install all dependencies, do
+
+```bash
+npm install --save exif-parser filesize id3js image-size ini js-yaml xml2js
+```
 
 ### fsm.filters.data
 
 reads json, xml, ini, and yaml files, and appends any data found to a property called `data`.
+
+Needs:
+```bash
+npm install --save ini js-yaml xml2js
+```
 
 example data:
 
@@ -438,7 +497,12 @@ stat = {
 
 reads exif properties from jpegs
 
+```bash
+npm install --save exif-parser
+```
+
 example data:
+
 ```js
 stat = {
     // normal stat properties...
@@ -476,6 +540,12 @@ stat = {
 
 adds human-readable file size to the object
 
+Needs:
+```bash
+npm install --save filesize
+```
+
+
 example data:
 
 ```js
@@ -489,6 +559,12 @@ var stat = {
 ### fsm.filters.id3
 
 Reads id3 data from mp3s
+
+Needs:
+
+```bash
+npm install --save id3js
+```
 
 example data:
 
@@ -529,6 +605,11 @@ var stat = {
 ### fsm.filters.image
 
 Reads image size from bmps, gifs, jpegs, pngs, psds, tiffs, webps, and svgs
+
+Needs:
+```bash
+npm install --save image-size
+```
 
 example data:
 

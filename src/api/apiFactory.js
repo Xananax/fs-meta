@@ -1,16 +1,15 @@
 import apido from 'apido';
-import commandsMaker from './commands';
+import commandsFactory from './commandsFactory';
 import Promise from 'bluebird'
 
-export default Promise.promisify(function makeAPI(fs,path,options,cb){
+export default Promise.promisify(function makeAPI(fs,options,cb){
 	
 	if(typeof options == 'function'){
 		cb = options;
 		options = null;
 	}
 
-	const boxed = fs.boxed(path,options);
-	const commands = commandsMaker(boxed,options);
+	const commands = commandsFactory(fs,options);
 
 	apido({
 		name:'fs'

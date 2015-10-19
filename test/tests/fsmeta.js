@@ -27,10 +27,3 @@ describe('fs.statToObj',()=>{
 		fs.statToObj.should.be.an.Function();
 	})
 })
-
-describe('fs.makeAPI',()=>{
-	it('should exist',()=>{
-		fs.should.have.property('makeAPI');
-		fs.makeAPI.should.be.an.Function();
-	})
-})

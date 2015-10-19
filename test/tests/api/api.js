@@ -1,10 +1,11 @@
 import fs from '../../../src';
+import {apiFactory} from '../../../src/api';
 import path from 'path';
 var rootDir = path.resolve(__dirname+'/../../fixtures');
 
 describe('api.runCommand(commandName,args,cb)',()=>{
-	it('should runCommand the command specified by commandName',done=>{
-		fs.makeAPI(rootDir,{})
+	it('should run the command specified by commandName',done=>{
+		apiFactory(fs.boxed(rootDir),{})
 		.then(api=>api.runCommand('readdir',['/']))
 		.then(answer=>{
 			answer.result.should.be.an.Array();
@@ -16,8 +17,8 @@ describe('api.runCommand(commandName,args,cb)',()=>{
 });
 
 describe('api.runPath(path,cb)',()=>{
-	it('should runCommand the command specified by commandName',done=>{
-		fs.makeAPI(rootDir,{})
+	it('should run the command specified by commandName',done=>{
+		apiFactory(fs.boxed(rootDir),{})
 		.then(api=>api.runPath('readdir/directory/subDirectory'))
 		.then(answer=>{
 			answer.result.should.be.an.Array();
@@ -30,7 +31,7 @@ describe('api.runPath(path,cb)',()=>{
 
 describe('api.runCommand(\'help\',cb)',()=>{
 	it('should return a summary of all commands',done=>{
-		fs.makeAPI(rootDir,{})
+		apiFactory(fs.boxed(rootDir),{})
 		.then(api=>api.runPath('help'))
 		.then(answer=>{
 			answer.result.should.be.an.Object();
@@ -42,7 +43,7 @@ describe('api.runCommand(\'help\',cb)',()=>{
 });
 
 describe('api.middleware(req,res,next)',done=>{
-	it('should',done=>{
+	it('should call res.json on success',done=>{
 		var req = {
 			path:'/getMeta/./'
 		,	query:{}
@@ -55,7 +56,7 @@ describe('api.middleware(req,res,next)',done=>{
 				done();
 			}
 		}
-		fs.makeAPI(rootDir,{})
+		apiFactory(fs.boxed(rootDir),{})
 		.then(api=>api.middleware(req,res,done))
 		.error(done)
 	})
