@@ -181,7 +181,7 @@ Differences with `traverse`:
 - You do not need to call `next()` for the processing to continue
 
 
-### fsm.getMeta(path[,options]) → Promise
+## fsm.getMeta(path[,options]) → Promise
 
 **There is no synchronous version of this method**.  
 
@@ -277,7 +277,7 @@ Example of returned object:
 
 Transforms a native node stats object into the json object described above. Used internally by `getMeta` and `getMetaRecursive`. The description of the stat object is below.
 
-### fsm.boxed(rootDirPath[,options]) → fs-meta instance
+## fsm.boxed(rootDirPath[,options]) → fs-meta instance
 
 creates a new instance of fs-meta that is constrained to the given `rootDirPath`.
 
@@ -325,7 +325,7 @@ fsm.boxed(dir,options).stat('some/path')
 ;
 ```
 
-### fsm.makeAPI(rootDir[,options]) → Promise
+## fsm.makeAPI(rootDir[,options]) → Promise
 
 options is an object and may contain:
 - `separator`: a string that specifies the separator between arguments. Defaults to ':'
@@ -357,15 +357,15 @@ For more info, check out the readme at [apido](https://github.com/Xananax/apido)
 
 # Global Properties
 
-### fsm.sync
+## fsm.sync
 
 Provides a copy of fs-meta, but with all sync methods.
 
-### fsm.unpromised
+## fsm.unpromised
 
 Provides a copy of fs-meta, but with regular methods instead of methods returning promises. 
 
-### fsm.filters
+## fsm.filters
 
 Pre-made filters for usage in `getMeta` and `getMetaRecursive`. Filters are described below.
 
@@ -396,7 +396,7 @@ This object is augmented by the filters that get applied.
 
 ---
 
-## Filters
+# Filters
 
 A filter has the following signature:
 ```js
@@ -414,11 +414,11 @@ function customFilter(meta,options,next,fs){
 - `next` is the function you should call when you're done processing. It is a regular nodeback, call it with `error` as the first argument, or the `meta` object as the second argument.
 - `fs` is a `graceful-fs` instance (in other words, no promises or additional functions are available on this instance).
 
-### Available filters:
+## Available filters:
 
 All filters are exposed on `fsm.filters`. They are:
 
-#### fsm.filters.data
+### fsm.filters.data
 
 reads json, xml, ini, and yaml files, and appends any data found to a property called `data`.
 
@@ -434,7 +434,7 @@ stat = {
 ```
 
 
-#### fsm.filters.exif
+### fsm.filters.exif
 
 reads exif properties from jpegs
 
@@ -472,7 +472,7 @@ stat = {
 }
 ```
 
-#### fsm.filters.fileSize
+### fsm.filters.fileSize
 
 adds human-readable file size to the object
 
@@ -486,7 +486,7 @@ var stat = {
 ```
 
 
-#### fsm.filters.id3
+### fsm.filters.id3
 
 Reads id3 data from mp3s
 
@@ -526,7 +526,7 @@ var stat = {
 }
 ```
 
-#### fsm.filters.image
+### fsm.filters.image
 
 Reads image size from bmps, gifs, jpegs, pngs, psds, tiffs, webps, and svgs
 
@@ -543,7 +543,7 @@ var stat = {
 }
 ```
 
-#### fsm.filters.text
+### fsm.filters.text
 
 Reads contents from txt, html, info, md, markdown, json, xml, ini, yaml, and css
 
@@ -556,7 +556,7 @@ var stat = {
 }
 ```
 
-#### fsm.filters.types
+### fsm.filters.types
 
 Adds a "types" array to the stat object, which may in certain cases be more useful than the mime types.
 
@@ -584,7 +584,7 @@ Types rack up, so an svg files with get `types:['image','vector']`, and a json f
 
 -----
 
-## Tests & Compile
+# Tests & Compile
 
 ```sh
 npm install --dev
@@ -602,7 +602,7 @@ npm run compile
 
 ----
 
-## MIT License
+# MIT License
 
 Copyright © Jad Sarout
 
