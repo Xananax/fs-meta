@@ -6,8 +6,7 @@ export default function makeLchown(fs){
 	return {
 		name:'lchown'
 	,	description:'lchown is like chown, but does not dereference symbolic links.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	uid
 		,	gid

@@ -4,8 +4,7 @@ export default function makeEnsureLink(fs){
 	return {
 		name:'ensureLink'
 	,	description:'Ensures that the link exists. If the directory structure does not exist, it is created.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

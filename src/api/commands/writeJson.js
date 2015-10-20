@@ -5,8 +5,7 @@ export default function makeWriteJson(fs){
 	return {
 		name:'writeJson'
 	,	description:'Writes an object to a JSON file'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	json
 		]

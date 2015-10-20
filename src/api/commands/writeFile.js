@@ -8,8 +8,7 @@ export default function makeWriteFile(fs){
 	return {
 		name:'writeFile'
 	,	description:'Writes data to a file, replacing the file if it already exists.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	data
 		]

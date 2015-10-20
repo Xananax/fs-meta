@@ -4,8 +4,7 @@ export default function makeEnsureDir(fs){
 	return {
 		name:'ensureDir'
 	,	description:'Ensures that the directory exists. If the directory structure does not exist, it is created.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

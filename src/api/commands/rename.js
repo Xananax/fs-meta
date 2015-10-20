@@ -5,8 +5,7 @@ export default function makeRename(fs){
 	return {
 		name:'rename'
 	,	description:'renames a file, moving it between directories if required.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	dest
 		]

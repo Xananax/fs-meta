@@ -5,8 +5,7 @@ export default function makeLink(fs){
 	return {
 		name:'link'
 	,	description:'creates a new link (also known as a hard link) to an existing file.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	dest
 		]

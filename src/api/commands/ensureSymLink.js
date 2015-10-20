@@ -4,8 +4,7 @@ export default function makeEnsureSymLink(fs){
 	return {
 		name:'ensureSymlink'
 	,	description:'Ensures that the symlink exists. If the directory structure does not exist, it is created.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

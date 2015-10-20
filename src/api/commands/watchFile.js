@@ -6,8 +6,7 @@ export default function makeWatchFile(fs,{watchListener}){
 	return {
 		name:'watchFile'
 	,	description:'Watch for changes on filename.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

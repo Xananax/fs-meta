@@ -5,8 +5,7 @@ export default function makeOutputJson(fs){
 	return {
 		name:'outputJson'
 	,	description:'Almost the same as writeJson, except that if the directory does not exist, it\'s created.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	json
 		]

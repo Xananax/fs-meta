@@ -5,8 +5,7 @@ export default function makeLchmod(fs){
 	return {
 		name:'lchmod'
 	,	description:'lchmod is like chmod, but does not dereference symbolic links.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	mode
 		]

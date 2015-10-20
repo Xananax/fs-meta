@@ -6,8 +6,7 @@ export default function makeWatch(fs,{watchListener}){
 	return {
 		name:'watch'
 	,	description:'Watches a file or directory.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

@@ -5,8 +5,7 @@ export default function collections(fs){
 	return {
 		name:'collections'
 	,	description:'manages collections of files'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			{
 				name:'command'
 			,	valid:validCommands

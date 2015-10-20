@@ -5,8 +5,7 @@ export default function makeOutputFile(fs){
 	return {
 		name:'outputFile'
 	,	description:'Almost the same as writeFile (i.e. it overwrites), except that if the parent directory does not exist, it\'s created.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	data
 		]

@@ -7,8 +7,7 @@ export default function makeMove(fs){
 	return {
 		name:'move'
 	,	description:'Moves a file or directory, even across devices.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	dest
 		]

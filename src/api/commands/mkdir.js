@@ -5,8 +5,7 @@ export default function makeMkdir(fs){
 	return {
 		name:'mkdir'
 	,	description:'attempts to create a directory named pathname.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

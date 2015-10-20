@@ -4,8 +4,7 @@ export default function makeRmDir(fs){
 	return {
 		name:'rmdir'
 	,	description:'Remove the DIRECTORY(ies), if they are empty.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

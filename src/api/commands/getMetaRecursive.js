@@ -6,8 +6,7 @@ export default function makeGetMetaRecursive(fs,{filters}){
 	return {
 		name:'getMetaRecursive'
 	,	description:'returns recursive extended stat about a directory and contents, or a file'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

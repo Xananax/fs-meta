@@ -4,8 +4,7 @@ export default function makeReadJson(fs){
 	return {
 		name:'readJson'
 	,	description:'Reads a JSON file and then parses it into an object.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

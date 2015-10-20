@@ -5,8 +5,7 @@ export default function makeSymLink(fs){
 	return {
 		name:'symlink'
 	,	description:'creates a symbolic link named linkpath which contains the string tparameteret.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	dest
 		]

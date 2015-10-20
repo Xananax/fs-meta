@@ -8,7 +8,6 @@ export default function makeCopy(fs){
 	return {
 		name:'copy'
 	,	description:'Copy a file or directory. The directory can have contents. Like cp -r.'
-	,	consume:':'
 	,	parameters:[
 			src
 		,	dest

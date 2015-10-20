@@ -42,7 +42,7 @@ describe('api.runCommand(\'help\',cb)',()=>{
 	})
 });
 
-describe('api.middleware(req,res,next)',done=>{
+describe('api.middleware(req,res,next)',()=>{
 	it('should call res.json on success',done=>{
 		var req = {
 			path:'/getMeta/./'
@@ -59,5 +59,39 @@ describe('api.middleware(req,res,next)',done=>{
 		apiFactory(fs.boxed(rootDir),{})
 		.then(api=>api.middleware(req,res,done))
 		.error(done)
+	})
+})
+
+describe('api.primus',()=>{
+	it('should call the spark\'s "write" method',done=>{
+		var spark = {
+			callback:null
+		,	on(str,fn){this.callback = fn;}
+		,	emit(){spark.callback({command:'getMeta',src:'.'})}
+		,	write(data){
+				if(data.error){
+					return done(data.nativeError)
+				}
+				done();
+			}
+		}
+		var primus = {
+			callback:null
+		,	on(str,fn){this.callback = fn;}
+		,	emit(){primus.callback(spark)}
+		}
+
+		function wait(fn){
+			setTimeout(fn,10);
+		}
+
+		apiFactory(fs.boxed(rootDir),{})
+		.then(api=>{
+			primus.on('connection',spark=>{
+				spark.on('data',api.primus(spark))
+			});
+			setTimeout(primus.emit,20);
+			setTimeout(spark.emit,50);
+		})
 	})
 })

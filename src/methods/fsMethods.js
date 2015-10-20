@@ -1,9 +1,7 @@
 export const fsMethods = [
 	'rename'
-,	'ftruncate'
 ,	'truncate'
 ,	'chown'
-,	'fchown'
 ,	'lchown'
 ,	'chmod'
 ,	'fchmod'

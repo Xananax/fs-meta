@@ -4,8 +4,7 @@ export default function makeRemove(fs){
 	return {
 		name:'remove'
 	,	description:'Removes a file or directory. The directory can have contents. Like rm -rf'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

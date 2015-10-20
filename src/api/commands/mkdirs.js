@@ -4,8 +4,7 @@ export default function makeMkdirs(fs){
 	return {
 		name:'mkdirs'
 	,	description:'Creates a directory. If the parent hierarchy doesn\'t exist, it\'s created. Like mkdir -p.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

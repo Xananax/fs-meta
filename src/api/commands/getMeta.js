@@ -6,8 +6,7 @@ export default function makeGetMeta(fs,{filters}){
 	return {
 		name:'getMeta'
 	,	description:'Returns extended stat about the file'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

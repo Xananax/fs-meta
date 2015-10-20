@@ -4,8 +4,7 @@ export default function makeUnWatchFile(fs,{watchListener}){
 	return {
 		name:'unwatchFile'
 	,	description:'Stops watching a file'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

@@ -5,8 +5,7 @@ export default function makeTruncate(fs){
 	return {
 		name:'truncate'
 	,	description:'Cause the regular file named by path to be truncated to a size of precisely length bytes. If the file previously was lparameterer than this size, the extra data is lost.  If the file previously was shorter, it is extended, and the extended part reads as null bytes. The file offset is not changed.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	len
 		]

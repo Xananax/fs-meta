@@ -6,8 +6,7 @@ export default function makeReadFile(fs){
 	return {
 		name:'readFile'
 	,	description:'Reads a file contents'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	optionalParameters:[

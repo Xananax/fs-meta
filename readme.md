@@ -351,11 +351,11 @@ apiFactory(boxed(rootDir),{})
 options is an object and may contain:
 - `separator`: a string that specifies the separator between arguments. Defaults to ':'
 - `commandSeparator`: a string that specifies the separator between a command and arguments. Defaults to '/'
-- All other options are transferred to `fsm.boxed` which `makeAPI` uses internally
+- All other options are transferred to `fsm.boxed` which `apiFactory` uses internally
 
 returns a function `api` of the following signature:
 ```js
-fsm.makeAPI(__dirname)
+apiFactory(__dirname)
 .then(api=>{
     return api.run(commandName,args)
 })
@@ -378,7 +378,7 @@ Instead of using the default `apiFactory` provided, you can compose your own. Th
 ```js
 import apido from 'apido'
 import {boxed} from 'fs-meta'
-import commandsProps from 'fs-meta/src/commands'; //apido-compatible list of commands
+import commandsProps from 'fs-meta/src/api/commands'; //apido-compatible list of commands
 
 const fs = boxed('/some/dir');
 
@@ -400,6 +400,15 @@ function makeAPI(cb){
     .then(api=>cb(null,api))
     .error(cb)
 }
+```
+
+**note**: you're better off importing from `fs-meta/lib` than `fs-meta/src`, unless you call babel in this fashion:
+```js
+require('babel/register')({
+    ignore:/node_modules\/(?!fs-meta)/
+});
+// or, on the command-line:
+// babel-node --ignore '/node_modules/(?fs-meta)' script.js
 ```
 
 

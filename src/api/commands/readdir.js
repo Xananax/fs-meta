@@ -4,8 +4,7 @@ export default function makeReadDir(fs){
 	return {
 		name:'readdir'
 	,	description:'list files in a directory'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

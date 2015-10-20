@@ -4,8 +4,7 @@ export default function makeEnsureFile(fs){
 	return {
 		name:'ensureFile'
 	,	description:'Ensures that the file exists. If the file that is requested to be created is in directories that do not exist, these directories are created. If the file already exists, it is NOT MODIFIED.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		]
 	,	run({src},cb){

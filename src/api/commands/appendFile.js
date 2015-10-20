@@ -8,7 +8,6 @@ export default function makeAppendFile(fs){
 	return {
 		name:'appendFile'
 	,	description:'Asynchronously append data to a file, creating the file if it does not yet exist. data can be a string or a buffer.'
-	,	consume:':'
 	,	parameters:[
 			src
 		,	data

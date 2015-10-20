@@ -6,8 +6,7 @@ export default function makeUtimes(fs){
 	return {
 		name:'utimes'
 	,	description:'changes the access and modification times of the inode specified by filename to the actime and modtime fields of times respectively.'
-	,	consume:':'
-	,	parameters:[
+		,	parameters:[
 			src
 		,	atime
 		,	mtime
