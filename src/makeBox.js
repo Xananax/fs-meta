@@ -69,6 +69,7 @@ export default function makeBox(rootDir,opts){
 	var filters = opts && opts.filters? opts.filters : [];
 	var unpromised = opts && opts.unpromised
 	var obj = {};
+	obj.filters = filters;
 	for(let name in methods){
 		obj[name] = methods[name];
 	}
@@ -87,7 +88,7 @@ export default function makeBox(rootDir,opts){
 							cb = options;
 							options = null;
 						}
-						options = Object.assign({},{root:obj.root,filters},options);
+						options = Object.assign({},options,{root:obj.root,filters:obj.filters});
 						return fn(src,options,cb);
 					} 
 					:
