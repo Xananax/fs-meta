@@ -88,7 +88,9 @@ export default function makeBox(rootDir,opts){
 							cb = options;
 							options = null;
 						}
-						options = Object.assign({},options,{root:obj.root,filters:obj.filters});
+						options = Object.assign({},options,{root:obj.root});
+						const filters = options.filters ? obj.filters.concat(options.filters) : obj.filters;
+						options.filters = filters;
 						return fn(src,options,cb);
 					} 
 					:
